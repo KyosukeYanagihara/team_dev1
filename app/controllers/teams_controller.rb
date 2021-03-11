@@ -15,7 +15,10 @@ class TeamsController < ApplicationController
     @team = Team.new
   end
 
-  def edit; end
+  def edit
+    if current_user.id == @team.owner_id
+    end
+  end
 
   def create
     @team = Team.new(team_params)
@@ -30,11 +33,11 @@ class TeamsController < ApplicationController
   end
 
   def update
-    if @team.update(team_params)
+    if current_user.id == @team.owner_id
+      @team.update(team_params)
       redirect_to @team, notice: I18n.t('views.messages.update_team')
     else
-      flash.now[:error] = I18n.t('views.messages.failed_to_save_team')
-      render :edit
+      redirect_to @team, notice: "権限がありません"
     end
   end
 
